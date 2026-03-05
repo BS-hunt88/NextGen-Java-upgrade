@@ -37,8 +37,8 @@
             uriroot="${webadmin}/${build.web}"
             addWebXmlMappings="true"
             webXmlFragment="${webadmin}/${build.web}/WEB-INF/generated_web.xml"
-            compilerSourceVM="1.6"
-            compilerTargetVM="1.6"
+            compilerSourceVM="17"
+            compilerTargetVM="17"
             outputDir="${webadmin}/${build.src}"
             verbose="9" />
 	</target>
@@ -55,7 +55,7 @@
 	</target>
 
 	<target name="compile" depends="jspc">
-		<javac destdir="${build.classes}" debug="true" srcdir="${build.src}">
+		<javac destdir="${build.classes}" debug="true" srcdir="${build.src}" release="17">
 			<classpath refid="compile.classpath" />
 		</javac>
 	</target>
