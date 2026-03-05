@@ -1208,9 +1208,13 @@
 				<jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
 				<jvmarg value="--add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
 				<jvmarg value="--add-opens=java.base/java.text=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.io=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.util.concurrent=ALL-UNNAMED" />
 				<jvmarg value="--add-opens=java.desktop/java.awt=ALL-UNNAMED" />
 				<jvmarg value="--add-opens=java.desktop/java.awt.font=ALL-UNNAMED" />
 				<jvmarg value="--add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.sql.rowset/com.sun.rowset=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.sql.rowset/javax.sql.rowset=ALL-UNNAMED" />
 				<classpath>
 					<path refid="testclasspath" />
 					<dirset dir="${test_classes}"/>
