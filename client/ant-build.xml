@@ -74,7 +74,7 @@
 
 	<target name="compile" depends="clean, init">
 		<mkdir dir="${classes}" />
-		<javac srcdir="${src}" destdir="${classes}" debug="on" includeAntRuntime="false">
+		<javac srcdir="${src}" destdir="${classes}" debug="on" includeAntRuntime="false" release="17">
 			<classpath refid="classpath" />
 		</javac>
 
@@ -336,7 +336,7 @@
 		<!-- compile the source -->
 		<mkdir dir="${test_classes}" />
 		
-		<javac srcdir="${test}" destdir="${test_classes}" debug="on" includeAntRuntime="false">
+		<javac srcdir="${test}" destdir="${test_classes}" debug="on" includeAntRuntime="false" release="17">
 			<classpath refid="testclasspath" />
 		</javac>
 	</target>
@@ -355,6 +355,13 @@
 			<junit haltonfailure="false" fork="true" forkmode="once">
 				<jvmarg value="-Xms128m" />
 				<jvmarg value="-Xmx2048m" />
+				<jvmarg value="--add-opens=java.base/java.util=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.text=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.desktop/java.awt=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.desktop/java.awt.font=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED" />
 				<classpath>
 					<path refid="testclasspath" />
 					<dirset dir="${test_classes}"/>

@@ -81,14 +81,8 @@
 		<!-- compile the source -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src}" destdir="${classes}" debug="on" includeAntRuntime="false">
+		<javac srcdir="${src}" destdir="${classes}" debug="on" includeAntRuntime="false" release="17">
 			<classpath refid="classpath" />
-			<!-- Uncomment the following and add additional dashes in front of the arguments to allow Java 9+
-				<compilerarg value="-add-modules" />
-				<compilerarg value="java.sql.rowset,java.xml.ws" />
-				<compilerarg value="-add-exports" />
-				<compilerarg value="java.sql.rowset/com.sun.rowset=ALL-UNNAMED" />
-			-->
 		</javac>
 
 		<!-- create version.properties file -->
@@ -1116,13 +1110,9 @@
 	<target name="create-javadocs" depends="init">
 		<mkdir dir="${docs.javadocs}" />
 		
-		<javadoc sourcepath="${src}:${jdk_src_path}" destdir="${docs.javadocs.userapi}" packagenames="com.mirth.connect.server.userutil,com.mirth.connect.userutil,com.mirth.connect.plugins.httpauth.userutil" link="https://docs.oracle.com/javase/8/docs/api/">
+		<javadoc sourcepath="${src}:${jdk_src_path}" destdir="${docs.javadocs.userapi}" packagenames="com.mirth.connect.server.userutil,com.mirth.connect.userutil,com.mirth.connect.plugins.httpauth.userutil" link="https://docs.oracle.com/en/java/javase/17/docs/api/">
 			<classpath refid="classpath" />
-			<!-- Uncomment the following and add additional dashes in front of the arguments to allow Java 9+
-				<arg line="-html5"/>
-				<arg line="-add-modules java.sql.rowset"/>
-				<arg line="-add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED"/>
-			-->
+			<arg line="-html5"/>
 		</javadoc>
 	</target>
 
@@ -1185,14 +1175,8 @@
 		<!-- compile the source -->
 		<mkdir dir="${test_classes}" />
 		
-		<javac srcdir="${test}" destdir="${test_classes}" debug="on" includeAntRuntime="false">
+		<javac srcdir="${test}" destdir="${test_classes}" debug="on" includeAntRuntime="false" release="17">
 			<classpath refid="testclasspath" />
-			<!-- Uncomment the following and add additional dashes in front of the arguments to allow Java 9+
-				<compilerarg value="-add-modules" />
-				<compilerarg value="java.sql.rowset,java.xml.ws" />
-				<compilerarg value="-add-exports" />
-				<compilerarg value="java.sql.rowset/com.sun.rowset=ALL-UNNAMED" />
-			-->
 		</javac>
 		
 		<copy todir="${test_classes}">
@@ -1220,15 +1204,13 @@
 			<junit haltonfailure="false" fork="true" forkmode="once">
 				<jvmarg value="-Xms128m" />
 				<jvmarg value="-Xmx2048m" />
-				<!-- Uncomment the following and add additional dashes in front of the arguments to allow Java 9+
-					<jvmarg value="-add-opens=java.base/java.util=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.base/java.lang=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.base/java.text=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.desktop/java.awt=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.desktop/java.awt.font=ALL-UNNAMED" />
-					<jvmarg value="-add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED" />
-				-->
+				<jvmarg value="--add-opens=java.base/java.util=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.base/java.text=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.desktop/java.awt=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.desktop/java.awt.font=ALL-UNNAMED" />
+				<jvmarg value="--add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED" />
 				<classpath>
 					<path refid="testclasspath" />
 					<dirset dir="${test_classes}"/>
