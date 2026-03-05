@@ -49,9 +49,13 @@ Java 9+ introduced the module system which restricts reflective access to intern
 --add-opens=java.base/java.lang=ALL-UNNAMED
 --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
 --add-opens=java.base/java.text=ALL-UNNAMED
+--add-opens=java.base/java.io=ALL-UNNAMED
+--add-opens=java.base/java.util.concurrent=ALL-UNNAMED
 --add-opens=java.desktop/java.awt=ALL-UNNAMED
 --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
 --add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED
+--add-opens=java.sql.rowset/com.sun.rowset=ALL-UNNAMED        (server only)
+--add-opens=java.sql.rowset/javax.sql.rowset=ALL-UNNAMED      (server only)
 ```
 
 These were already present as comments in many build files (prepared for Java 9+ migration). They have been uncommented and standardized across all modules with proper `--` (double-dash) prefix format.
@@ -93,16 +97,26 @@ Since the project already included standalone JAR replacements for all removed J
 
 ---
 
-## 4. Dependency Compatibility
+## 4. Dependency Upgrades
 
-All existing library JARs in `server/lib/` are compatible with Java 17:
+The following dependencies were upgraded for Java 17 compatibility:
+
+| Dependency | Old Version | New Version | Reason |
+|-----------|-------------|-------------|--------|
+| Mockito | 2.7.9 | 4.11.0 | Old version used ByteBuddy APIs incompatible with Java 17 module system |
+| ByteBuddy | 1.8.8 | 1.14.11 | Old version could not instrument classes under Java 17 |
+| ByteBuddy Agent | 1.8.8 | 1.14.11 | Required matching version with ByteBuddy |
+| Jacoco | 0.8.2 | 0.8.11 | Old version crashed with `FATAL ERROR in native method` on Java 17 |
+
+Modules updated: `server`, `donkey`, `core-models`, `core-client-base`, `core-server-plugins`
+
+### Dependencies Already Compatible
 
 - **JAXB 2.4.0** — Provides `javax.xml.bind.*` as standalone library ✓
 - **JAX-WS 2.3.0** — Provides `javax.xml.ws.*` as standalone library ✓  
 - **Rhino JavaScript Engine** — Bundled in `core-util/`, not dependent on Nashorn ✓
 - **Log4j2** — Used for logging, compatible with Java 17 ✓
 - **JUnit 4** — Compatible with Java 17 (with `--add-opens` for reflective access) ✓
-- **Jacoco** — Code coverage agent, compatible with Java 17 ✓
 
 ---
 
@@ -126,7 +140,16 @@ All existing library JARs in `server/lib/` are compatible with Java 17:
 14. `server/build.xml`
 15. `webadmin/build.xml`
 
-**No Java source files were modified** — the existing standalone JAR dependencies already provide all APIs removed from the JDK.
+### Java Source Files Modified
+
+3 test files were updated for Java 17 / Mockito 4.x compatibility:
+
+16. `core-util/test/com/mirth/commons/encryption/test/KeyEncryptorTest.java`
+    - Replaced `import com.sun.crypto.provider.SunJCE` (unexported in Java 17) with `java.security.Security.getProvider("SunJCE").getClass().getName()`
+17. `server/test/com/mirth/connect/server/DatabaseConnectionPoolTests.java`
+    - Replaced `verifyZeroInteractions()` → `verifyNoInteractions()` (removed in Mockito 4.x)
+18. `server/test/com/mirth/connect/server/attachments/MirthAttachmentHandlerProviderTest.java`
+    - Replaced `verifyZeroInteractions()` → `verifyNoInteractions()` (removed in Mockito 4.x)
 
 ---
 
@@ -141,10 +164,19 @@ When deploying the application with Java 17, the following JVM arguments should 
 --add-opens=java.base/java.lang=ALL-UNNAMED
 --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
 --add-opens=java.base/java.text=ALL-UNNAMED
+--add-opens=java.base/java.io=ALL-UNNAMED
+--add-opens=java.base/java.util.concurrent=ALL-UNNAMED
 --add-opens=java.desktop/java.awt=ALL-UNNAMED
 --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
 --add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED
+--add-opens=java.sql.rowset/com.sun.rowset=ALL-UNNAMED
+--add-opens=java.sql.rowset/javax.sql.rowset=ALL-UNNAMED
 ```
+
+### Build & Test Verification
+
+- **Full compilation**: All 15 modules compile successfully with Java 17 (JDK 17.0.13)
+- **Test suite**: Most tests pass. Remaining failures are pre-existing issues (test data file paths, XML whitespace formatting differences) unrelated to the Java 17 upgrade.
 
 ### Future Considerations
 
